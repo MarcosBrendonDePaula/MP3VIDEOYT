@@ -1,0 +1,24 @@
+{
+  "name": "mp3videoyt",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcosBrendonDePaula/MP3VIDEOYT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcosBrendonDePaula/MP3VIDEOYT/issues"
+  },
+  "homepage": "https://github.com/MarcosBrendonDePaula/MP3VIDEOYT#readme",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "express": "^4.17.3",
+    "morgan": "^1.10.0"
+  }
+}
