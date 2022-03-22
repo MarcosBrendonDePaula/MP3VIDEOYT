@@ -1,5 +1,5 @@
 const request = require('supertest')
-
+const app = require("../app")
 describe('Teste do index',()=>{
     it('acesso a rota principal',async ()=>{
         const res = await request(app).get('/')
