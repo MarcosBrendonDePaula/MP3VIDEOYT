@@ -7,6 +7,6 @@ const controller = require('../controller/audio')
 
 Router.get("/",controller.basic)
 
-Router.post("/",controller.syncDownload)
-
+Router.post("/sync",controller.checkForm,controller.syncDownload)
+Router.post("/async",controller.checkForm,controller.asyncDownload)
 module.exports = Router
