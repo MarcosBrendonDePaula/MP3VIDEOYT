@@ -1,6 +1,6 @@
 const request = require('supertest')
 
-discribe('Teste do index',()=>{
+describe('Teste do index',()=>{
     it('acesso a rota principal',async ()=>{
         const res = await request(app).get('/')
         //.send() enviar um corpo para post
