@@ -134,14 +134,13 @@ class YoutubeMp3Downloader extends EventEmitter {
     // Add progress event listener
     str.on('progress', function(progress) {
       progress.estimative = (((progress.length - progress.transferred) / progress.speed)/60)
-      if (progress.percentage === 100) {
-        resultObj.stats= {
-          transferredBytes: progress.transferred,
-          runtime: progress.runtime,
-          averageSpeed: parseFloat(progress.speed.toFixed(2))
-        }
+      if (progress.percentage >= 100) {
+          resultObj.stats = {
+              transferredBytes: progress.transferred,
+              runtime: progress.runtime,
+              averageSpeed: parseFloat(progress.speed.toFixed(2))
+          }
       }
-      
       self.emit('progress', {videoId: task.videoId, progress: progress})
     });
 
