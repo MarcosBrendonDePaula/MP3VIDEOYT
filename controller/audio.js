@@ -1,10 +1,9 @@
 const os = require("os")
 const fs = require('fs');
 
+const base_url = process.env.LinkBase | "http://127.0.0.1"
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 var pathToFfmpeg = require('ffmpeg-static');
-
-
 
 const mp3_local = "./public/mp3";
 (async ()=>{
@@ -49,7 +48,7 @@ const syncDownload = async (req,res) =>{
     })
 
     YD.on("finished",(err, data)=>{
-        data.file = data.file.replace("./public","")
+        data.file = data.file.replace("./public",base_url)
         Cache[video_id] = data
         res.json(data)
     })
@@ -83,7 +82,7 @@ const asyncDownload = async(req, res) =>{
         YD.on("finished",(err, data)=>{
             data.progress = Cache[req.body.id].progress
             data.stats = "finished"
-            data.file = data.file.replace("./public","")
+            data.file = data.file.replace("./public",base_url)
             Cache[req.body.id] = data
         })
 
