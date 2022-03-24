@@ -1,7 +1,7 @@
 const os = require("os")
 const fs = require('fs');
 
-const base_url = process.env.linkbase | "http://127.0.0.1"
+const base_url = process.env.LINKBASE || "http://127.0.0.1"
 console.log(base_url)
 
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
