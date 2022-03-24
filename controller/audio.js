@@ -36,7 +36,7 @@ const checkForm = async (req,res, next)=>{
 const syncDownload = async (req,res) =>{
     let video_id = req.body.id
     if(Cache[video_id]){
-        res.send(Cache[video_id])
+        res.json(Cache[video_id])
         return;
     }
 
