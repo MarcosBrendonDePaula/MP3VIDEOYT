@@ -3,7 +3,7 @@ const app = require("../app")
 
 describe('Teste da rota audio',()=>{
 
-    jest.setTimeout(30000)
+    jest.setTimeout(300000)
     /**
      * Checa se o retorno é o esperado para a requisição
      */
@@ -11,8 +11,8 @@ describe('Teste da rota audio',()=>{
         const res = await request(app).post('/audio/sync')
             .send({
                 id:"rY-FJvRqK0E"
+                //id:"SXG38_5LDso"
             })
-        console.log(res)
         expect(res.statusCode).toEqual(200);
     })
 
