@@ -10,8 +10,8 @@ describe('Teste da rota audio',()=>{
     it('Tentativa de download com id sincrono',async ()=>{
         const res = await request(app).post('/audio/sync')
             .send({
-                id:"rY-FJvRqK0E"
-                //id:"SXG38_5LDso"
+                //id:"rY-FJvRqK0E"
+                id:"SXG38_5LDso"
             })
         expect(res.statusCode).toEqual(200);
     })

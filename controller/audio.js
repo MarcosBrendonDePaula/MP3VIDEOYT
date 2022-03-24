@@ -1,7 +1,9 @@
 const os = require("os")
 const fs = require('fs');
 
-const base_url = process.env.LinkBase | "http://127.0.0.1"
+const base_url = process.env.linkbase | "http://127.0.0.1"
+console.log(base_url)
+
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 var pathToFfmpeg = require('ffmpeg-static');
 
@@ -23,10 +25,9 @@ const Render = (req,res) => {
 }
 
 const checkForm = async (req,res, next)=>{
-    console.log(req.body)
     if(req.body.id == undefined){
         req.body.id = "expected a video id"
-        res.status(400).send(req.body)
+        res.status(400).json(req.body)
         return
     }
     next()
