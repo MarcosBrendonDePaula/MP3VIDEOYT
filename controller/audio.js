@@ -47,6 +47,12 @@ const syncDownload = async (req,res) =>{
         "queueParallelism": os.cpus().length,             
         "allowWebm": false
     })
+    
+    YD.on("progress",(progress)=>{
+        progress.stats = "downloading"
+        Cache[progress.videoId] = progress;
+        send(Cache[progress.videoId])
+    })
 
     YD.on("finished",(err, data)=>{
         data.file = data.file.replace("./public",base_url)
