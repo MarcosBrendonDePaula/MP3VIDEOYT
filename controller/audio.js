@@ -2,7 +2,8 @@ const os = require("os")
 const fs = require('fs');
 
 const base_url = process.env.LINKBASE || "http://127.0.0.1"
-console.log(base_url)
+const remove_timeout = (process.env.RTIMEOUT || 10*60000)
+const remove_timeout_delay = (process.env.RTIMEOUTDELAY || 5000)
 
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 var pathToFfmpeg = require('ffmpeg-static');
@@ -33,6 +34,23 @@ const checkForm = async (req,res, next)=>{
     next()
 }
 
+const storage_manipulation = async (id)=>{
+    try{
+        while (Cache[id]){
+            if(Cache[id].deleting <= 0)
+            {
+                fs.unlinkSync("./public/mp3/"+Cache[id].videoTitle+".mp3");
+                return;    
+            }
+            Cache[id].deleting -= remove_timeout_delay
+            await new Promise(r => setTimeout(r, remove_timeout_delay));
+        }
+    }catch(err){
+        console.log(err);
+        return;
+    }
+}
+
 const syncDownload = async (req,res) =>{
     let video_id = req.body.id
     if(Cache[video_id]){
@@ -51,12 +69,13 @@ const syncDownload = async (req,res) =>{
     YD.on("progress",(progress)=>{
         progress.stats = "downloading"
         Cache[progress.videoId] = progress;
-        send(Cache[progress.videoId])
     })
 
     YD.on("finished",(err, data)=>{
         data.file = data.file.replace("./public",base_url)
+        data.deleting = remove_timeout
         Cache[video_id] = data
+        storage_manipulation(video_id)
         res.json(data)
     })
 
@@ -69,8 +88,9 @@ const syncDownload = async (req,res) =>{
 } 
 
 const asyncDownload = async(req, res) =>{
-    if(Cache[req.body.id] == undefined){
-        Cache[req.body.id] = {}
+    let video_id = req.body.id
+    if(Cache[video_id] == undefined){
+        Cache[video_id] = {}
         
         let send = (value)=>{
             res.send(value)
@@ -82,28 +102,30 @@ const asyncDownload = async(req, res) =>{
             "outputPath": mp3_local,    // Output file location (default: the home directory)
             "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
             "queueParallelism": os.cpus().length,                  // Download parallelism (default: 1)
-            "progressTimeout": 200,                // Interval in ms for the progress reports (default: 1000)
+            "progressTimeout": 1000,                // Interval in ms for the progress reports (default: 1000)
             "allowWebm": false                      // Enable download from WebM sources (default: false)
         })
         
         YD.on("finished",(err, data)=>{
-            data.progress = Cache[req.body.id].progress
+            data.progress = Cache[video_id].progress
+            data.deleting = remove_timeout
             data.stats = "finished"
             data.file = data.file.replace("./public",base_url)
-            Cache[req.body.id] = data
+            Cache[video_id] = data
+            storage_manipulation(video_id)
         })
 
         YD.on("progress",(progress)=>{
             progress.stats = "downloading"
-            Cache[progress.videoId] = progress;
-            send(Cache[progress.videoId])
+            Cache[video_id] = progress;
+            send(Cache[video_id])
         })
         YD.on("error", function(error) {
             res.json(error)
         })
-        YD.download(req.body.id);
+        YD.download(video_id);
     }else{
-        res.json(Cache[req.body.id])
+        res.json(Cache[video_id])
     }
 }
 

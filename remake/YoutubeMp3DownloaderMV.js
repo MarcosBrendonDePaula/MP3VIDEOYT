@@ -105,6 +105,9 @@ class YoutubeMp3Downloader extends EventEmitter {
 
     const stream = ytdl.downloadFromInfo(info, streamOptions);
     
+    let init_download = ()=>{
+      
+    };
     let size = -20
 
     stream.on('response', function(httpResponse) {
