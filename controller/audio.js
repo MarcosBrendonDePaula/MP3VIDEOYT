@@ -51,43 +51,7 @@ const storage_manipulation = async (id)=>{
     }
 }
 
-const syncDownload = async (req,res) =>{
-    let video_id = req.body.id
-    if(Cache[video_id]){
-        res.json(Cache[video_id])
-        return;
-    }
-
-    const YD = new YoutubeMp3Downloader({
-        "ffmpegPath": pathToFfmpeg,
-        "outputPath": mp3_local,
-        "youtubeVideoQuality": "highestaudio", 
-        "queueParallelism": os.cpus().length,             
-        "allowWebm": false
-    })
-    
-    YD.on("progress",(progress)=>{
-        progress.stats = "downloading"
-        Cache[progress.videoId] = progress;
-    })
-
-    YD.on("finished",(err, data)=>{
-        data.file = data.file.replace("./public",base_url)
-        data.deleting = remove_timeout
-        Cache[video_id] = data
-        storage_manipulation(video_id)
-        res.json(data)
-    })
-
-    YD.on("error", function(error) {
-        res.status(500)
-        res.json(error)
-    })
-
-    YD.download(video_id);
-} 
-
-const asyncDownload = async(req, res) =>{
+const download = async(req, res) =>{
     let video_id = req.body.id
     if(Cache[video_id] == undefined){
         Cache[video_id] = {}
@@ -131,7 +95,6 @@ const asyncDownload = async(req, res) =>{
 
 module.exports={
     Render,
-    syncDownload,
-    asyncDownload,
+    download,
     checkForm
 }
