@@ -28,6 +28,11 @@ const Render = (req,res) => {
 }
 
 const checkForm = async (req,res, next)=>{
+    
+    if(req.params.videoId){
+        req.body.id = req.params.videoId
+    }
+
     if(req.body.id == undefined){
         req.body.id = "expected a video id"
         res.status(400).json(req.body)
