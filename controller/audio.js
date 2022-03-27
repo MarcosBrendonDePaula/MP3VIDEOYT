@@ -2,8 +2,10 @@ const os = require("os")
 const fs = require('fs');
 
 const base_url = process.env.LINKBASE || "http://127.0.0.1"
-const remove_timeout = (process.env.RTIMEOUT || 10*60000)
-const remove_timeout_delay = (process.env.RTIMEOUTDELAY || 5000)
+const remove_timeout = process.env.RTIMEOUT || (10*60000)
+const remove_timeout_delay = process.env.RTIMEOUTDELAY || 5000
+
+console.log(base_url,remove_timeout,remove_timeout_delay)
 
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 var pathToFfmpeg = require('ffmpeg-static');
@@ -40,6 +42,7 @@ const storage_manipulation = async (id)=>{
             if(Cache[id].deleting <= 0)
             {
                 fs.unlinkSync("./public/mp3/"+Cache[id].videoTitle+".mp3");
+                delete Cache[id];
                 return;    
             }
             Cache[id].deleting -= remove_timeout_delay
@@ -84,6 +87,7 @@ const download = async(req, res) =>{
             Cache[video_id] = progress;
             send(Cache[video_id])
         })
+
         YD.on("error", function(error) {
             res.json(error)
         })
