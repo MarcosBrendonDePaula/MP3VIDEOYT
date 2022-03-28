@@ -2,6 +2,8 @@ const https = require("https");
 
 const YT_KEY = process.env.YTKEY || "AIzaSyBBNRRlenbcURj_WMmQjzIZHAMYlx5OfeA"; 
 
+const Info_cahce = {}
+
 const checkForm = async (req,res,next) =>{
     if(req.params.videoId){
         req.body.id = req.params.videoId 
@@ -21,6 +23,11 @@ const Render = async(req,res)=>{
 const getInfo = async(req,res)=>{
     let video_id = req.body.id
 
+    if(Info_cahce[video_id]){
+        res.json(Info_cahce[video_id])
+        return
+    }
+
     const options = {
         hostname: 'content-youtube.googleapis.com',
         port: 443,
@@ -39,6 +46,7 @@ const getInfo = async(req,res)=>{
             if (resp.statusCode === 200) {
                 try {
                     json = JSON.parse(json)
+                    Info_cahce[video_id] = json
                     res.json(json)
                 } catch (error) {
                     res.status(500).json(error)
