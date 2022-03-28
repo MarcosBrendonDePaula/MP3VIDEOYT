@@ -49,7 +49,7 @@ const getInfo = async(req,res)=>{
                     json = JSON.parse(json)
                     if(json.items[0]){
                         Info_cahce[video_id] = json.items[0]
-                        res.json(json)
+                        res.json(Info_cahce[video_id])
                     }else{
                         res.status(400).json({id:"id not found"})
                     }
