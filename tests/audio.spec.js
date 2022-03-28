@@ -5,7 +5,7 @@ describe('Teste da rota audio',()=>{
     /**
      * Checa se de alguma forma a função de download é executada sem id
      */
-    it('Tentativa de download de musica sem id sincrono',async ()=>{
+    it('Tentativa de download de musica sem id',async ()=>{
         const res = await request(app).post('/audio')
             .send({})
         expect(res.statusCode).toEqual(400);
@@ -13,7 +13,7 @@ describe('Teste da rota audio',()=>{
     })
      
     /**
-     * Checa se de alguma forma a função de download é executada sem id
+     * Checa se de alguma forma a função de download é executada com id
      */
     it('Tentativa de download com id asincrono',async ()=>{
         const res = await request(app).post('/audio')
