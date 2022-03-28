@@ -1,3 +1,4 @@
+"use strict";
 const https = require("https");
 
 const YT_KEY = process.env.YTKEY || "AIzaSyBBNRRlenbcURj_WMmQjzIZHAMYlx5OfeA"; 
