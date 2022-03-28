@@ -19,7 +19,7 @@ router.post('/video', (req, res) => {
         const teste = ytdl.getInfo(id)
 
         teste.then(test => {
-            //console.log(test.formats)
+            // console.log(test.formats)
             // ytdl(url).pipe(fs.createWriteStream(test.videoDetails.title + '.mp4'))
             res.render('home', {video: test})
         })
