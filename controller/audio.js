@@ -9,7 +9,7 @@ const remove_timeout_delay = process.env.RTIMEOUTDELAY || 5000
 console.log(base_url,remove_timeout,remove_timeout_delay)
 
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
-var pathToFfmpeg = require('ffmpeg-static');
+var pathToFfmpeg = "/data/data/com.termux/files/usr/bin"
 
 const mp3_local = "./public/mp3";
 (async ()=>{
