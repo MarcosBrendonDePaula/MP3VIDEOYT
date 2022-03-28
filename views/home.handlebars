@@ -1,31 +1,79 @@
-<div class="container text-center">
+<!--TESTANDO-->
 
+{{#if video}}
 
-    <div class="row mt-5 shadow">
-        <div class="col">
-
-            <h1>NAME</h1>
-            <form action="..." method="post">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">Dropdown</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Ação</a>
-                            <a class="dropdown-item" href="#">Outra ação</a>
-                            <a class="dropdown-item" href="#">Algo mais aqui</a>
-                            <div role="separator" class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Link isolado</a>
-                        </div>
-                    </div>
-                    <input type="text" class="form-control" placeholder="https://youtube.com/..."
-                        aria-label="Input text com botão dropdown">
-                </div>
-
-                <button class="btn btn-primary">Download</button>
-            </form>
-
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-2">
+            <img src="{{video.videoDetails.thumbnails.0.url}}" alt="">
         </div>
+        <div class="col-md-8">
+            <p><strong>Title:</strong> {{video.videoDetails.title}}</p>
+            <p><strong>Video ID:</strong> {{video.videoDetails.videoId}}</p>
+            <p><strong>Channel:</strong> <a href="{{video.videoDetails.author.channel_url}}"
+                    target="_blank">{{video.videoDetails.author.channel_url}}</a></p>
+            <p><strong>Upload date:</strong> {{video.videoDetails.uploadDate}}</p>
+        </div>
+    </div>
+</div>
+
+{{else}}
+{{/if}}
+
+<div class="container mt-3">
+    <form action="/video" method="post">
+        {{#if video}}
+        <input type="text" name="testando" class="form-control" value="{{video.videoDetails.video_url}}">
+        {{else}}
+        <input type="text" name="testando" class="form-control" placeholder="https://youtube.com/...">
+        {{/if}}
+        <br>
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">SEARCH VIDEO</button>
+        </div>
+
+    </form>
+</div>
+
+<div class="container mt-5">
+    {{#if video}}
+    <h5 class="text-center"><a href="/download/{{video.videoDetails.videoId}}">Download</a></h5>
+    <h5 class="text-center">FORMATS</h5>
+    {{else}}
+    {{/if}}
+    <div class="row">
+        {{#each video.formats}}
+        {{!-- <p>
+            {{mimeType}} --> <a href="{{url}}" target="_blank">url</a>
+        </p> --}}
+
+
+        <div class="col-sm-2 mb-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{mimeType}}</h5>
+                    <p class="card-text"><strong>Quality: </strong>{{quality}}</p>
+                    <a href="{{url}}" class="btn btn-primary" target="_blank">link</a>
+                </div>
+            </div>
+        </div>
+        
+
+
+        {{else}}
+
+        {{/each}}
+        
     </div>
 
 </div>
+
+{{#if video}}
+
+<script>
+    console.log('{{video}}')
+</script>
+
+{{else}}
+
+{{/if}}

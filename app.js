@@ -21,6 +21,10 @@ app.set('view engine', 'handlebars')
 // Public
 app.use(express.static(path.join(__dirname, 'public')))
 
+// Body parser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 
 app.use(function (req, res, next) {
 
