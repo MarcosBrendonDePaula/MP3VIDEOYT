@@ -1,7 +1,10 @@
 const Express = require('express')
 const Router = Express.Router()
+const controller = require('../controller/video')
 
-//https://www.npmjs.com/package/youtube-dl - usado no video https://www.youtube.com/watch?v=ImUzmucwSPI
-//https://www.npmjs.com/package/youtube-dl-exec
+Router.post('/', controller.get)
+Router.get('/get/:id', controller.downloadBest)
+Router.post('/get/:id/format', controller.downloadSpecific)
+
 
 module.exports = Router
