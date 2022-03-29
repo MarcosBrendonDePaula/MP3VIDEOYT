@@ -6,8 +6,6 @@ const base_url = process.env.LINKBASE || "http://127.0.0.1"
 const remove_timeout = process.env.RTIMEOUT || (10*60000)
 const remove_timeout_delay = process.env.RTIMEOUTDELAY || 5000
 
-console.log(base_url,remove_timeout,remove_timeout_delay)
-
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 var pathToFfmpeg = require('ffmpeg-static');
 
