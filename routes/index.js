@@ -12,8 +12,9 @@ router.get('/', (req, res) => {
 const stream = require('stream');
 const cp = require('child_process');
 const ffmpeg = require('ffmpeg-static');
-const ytmux = (link, options = {}, marcos) => {
+const ytmux = (link, marcos, options = {}) => {
     const result = new stream.PassThrough({ highWaterMark: options.highWaterMark || 1024 * 512 });
+    console.log(marcos)
     ytdl.getInfo(link, options).then(info => {                            //Aqui que define a resolução no caso o highest é a melhor disponivel no video
         audioStream = ytdl.downloadFromInfo(info, { ...options, quality: 'highestaudio' });
         videoStream = ytdl.downloadFromInfo(info, { ...options, quality: marcos });
@@ -48,7 +49,7 @@ router.post('/video', (req, res) => {
         const teste = ytdl.getInfo(id)
 
         teste.then(test => {
-            console.log(test.formats)
+            // console.log(test.formats)
             // ytdl(url).pipe(fs.createWriteStream(test.videoDetails.title + '.mp4'))
             res.render('home', {video: test})
         })
@@ -72,7 +73,7 @@ router.post('/download/:id/format', (req, res) => {
     info.then(info => {
         let format = ytdl.chooseFormat(info.formats, { quality: req.body.itag})
         res.header('Content-Disposition', 'attachment; filename='+info.videoDetails.title+'.mp4')
-        ytmux("https://www.youtube.com/watch?v="+req.params.id,  format).pipe(res)
+        ytmux("https://www.youtube.com/watch?v="+req.params.id, req.body.itag).pipe(res)
     })
     
 })
