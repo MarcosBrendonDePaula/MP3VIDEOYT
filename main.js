@@ -13,6 +13,8 @@ if (cluster.isMaster){
   
   cluster.on('exit',(worker, code, signal)=>{
     console.log(`worker ${worker.process.pid} morreu!`)
+    console.log("Iniciando novo worker")
+    cluster.fork()
   })
 
 }else{
