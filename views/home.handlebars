@@ -13,6 +13,8 @@
             <p><strong>Channel:</strong> <a href="{{video.videoDetails.author.channel_url}}"
                     target="_blank">{{video.videoDetails.author.channel_url}}</a></p>
             <p><strong>Upload date:</strong> {{video.videoDetails.uploadDate}}</p>
+            <p id="video_duration">{{video.videoDetails.lengthSeconds}}</p>
+
         </div>
     </div>
 </div>
@@ -65,7 +67,42 @@
     </div>
 </div> --}}
 
+<script>
+    function formatBytes(bytes, decimals = 2) { //https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+        if (bytes === 0) return '0 Bytes';
 
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    function fancyTimeFormat(duration) {   //https://stackoverflow.com/questions/3733227/javascript-seconds-to-minutes-and-seconds
+        // Hours, minutes and seconds
+        var hrs = ~~(duration / 3600);
+        var mins = ~~((duration % 3600) / 60);
+        var secs = ~~duration % 60;
+
+        // Output like "1:01" or "4:03:59" or "123:03:59"
+        var ret = "";
+
+        if (hrs > 0) {
+            ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+        }
+
+        ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+        ret += "" + secs;
+        return ret;
+    }
+
+    const video_duration = document.querySelector('#video_duration')
+    video_duration.innerText = 'Duration: ' + fancyTimeFormat(video_duration.innerText)
+</script>
+
+{{#if video}}
 <div class="container">
     <form action="/download/{{video.videoDetails.videoId}}/format" method="post">
 
@@ -73,17 +110,32 @@
 
         <!--Load all the valids formats-->
         {{#each video.formats}}
-            {{#if (compare_strings ./container 'mp4')}}
-                <div>
-                    <input type="radio" name="itag" value="{{itag}}">
-                    <label for="choice1">{{quality}} - {{./container}} - {{mimeType}} - {{contentLength}} bytes - <a href="{{url}}">link</a> - {{itag}}</label>
-                </div>
-            {{else}}
-            {{/if}}
+        {{#if (compare_strings ./container 'mp4')}}
+        <div>
+            <input type="radio" name="itag" value="{{itag}}">
+            <label for="choice1">{{height}}p - {{./video.videoDetails.title}} - {{./container}} - {{mimeType}} - <a
+                    href="{{url}}">link</a> - {{itag}} - </label>
+            <label id="{{itag}}">{{contentLength}}</label>
+
+        </div>
+
+        <script>
+
+            document.getElementById('{{itag}}').innerText = formatBytes(document.getElementById('{{itag}}').innerText)
+        </script>
+        {{else}}
+        {{/if}}
         {{else}}
         {{/each}}
 
         <button type="submit" class="btn btn-primary">Download</button>
-        
+
     </form>
 </div>
+
+
+
+{{else}}
+
+
+{{/if}}
