@@ -35,18 +35,15 @@
     </form>
 </div>
 
-<div class="container mt-5">
+{{!-- <div class="container mt-5">
     {{#if video}}
     <h5 class="text-center"><a href="/download/{{video.videoDetails.videoId}}">Download</a></h5>
     <h5 class="text-center">FORMATS</h5>
     {{else}}
     {{/if}}
+
     <div class="row">
         {{#each video.formats}}
-        {{!-- <p>
-            {{mimeType}} --> <a href="{{url}}" target="_blank">url</a>
-        </p> --}}
-
 
         <div class="col-sm-2 mb-2">
             <div class="card">
@@ -59,23 +56,34 @@
                 </div>
             </div>
         </div>
-        
+
 
 
         {{else}}
 
         {{/each}}
-        
     </div>
+</div> --}}
 
+
+<div class="container">
+    <form action="/download/{{video.videoDetails.videoId}}/format" method="post">
+
+        <h2>Choose your quality</h2>
+
+        <!--Load all the valids formats-->
+        {{#each video.formats}}
+            {{#if (compare_strings ./container 'mp4')}}
+                <div>
+                    <input type="radio" name="itag" value="{{itag}}">
+                    <label for="choice1">{{quality}} - {{./container}} - {{mimeType}} - {{contentLength}} bytes - <a href="{{url}}">link</a> - {{itag}}</label>
+                </div>
+            {{else}}
+            {{/if}}
+        {{else}}
+        {{/each}}
+
+        <button type="submit" class="btn btn-primary">Download</button>
+        
+    </form>
 </div>
-
-{{#if video}}
-
-<script>
-    console.log('{{video}}')
-</script>
-
-{{else}}
-
-{{/if}}

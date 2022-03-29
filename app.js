@@ -1,5 +1,5 @@
 const express = require('express');
-const { engine } = require ('express-handlebars');
+const handlebars = require ('express-handlebars');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const path = require('path');
@@ -15,7 +15,14 @@ app.use(logger('tiny'));
 app.use(bodyParser.json());
 
 // Handlebars
-app.engine('handlebars', engine())
+var hbs = handlebars.create({
+    // Specify helpers which are only registered on this instance.
+    helpers: {
+      compare_strings: require('./helpers/compare_strings')
+    }
+  });
+
+app.engine('handlebars', hbs.engine)
 app.set('view engine', 'handlebars')
 
 // Public

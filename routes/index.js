@@ -9,6 +9,35 @@ router.get('/', (req, res) => {
 
 //TESTANDO
 
+const stream = require('stream');
+const cp = require('child_process');
+const ffmpeg = require('ffmpeg-static');
+const ytmux = (link, options = {}, marcos) => {
+    const result = new stream.PassThrough({ highWaterMark: options.highWaterMark || 1024 * 512 });
+    ytdl.getInfo(link, options).then(info => {                            //Aqui que define a resolução no caso o highest é a melhor disponivel no video
+        audioStream = ytdl.downloadFromInfo(info, { ...options, quality: 'highestaudio' });
+        videoStream = ytdl.downloadFromInfo(info, { ...options, quality: marcos });
+        let ffmpegProcess = cp.spawn(ffmpeg, [
+            '-loglevel', '8', '-hide_banner',
+            '-i', 'pipe:3', '-i', 'pipe:4',
+            '-map', '0:a', '-map', '1:v',
+            '-c', 'copy',
+            '-f', 'matroska', 'pipe:5'
+        ], {
+            windowsHide: true,
+            stdio: [
+                'inherit', 'inherit', 'inherit',
+                'pipe', 'pipe', 'pipe'
+            ]
+        });
+        audioStream.pipe(ffmpegProcess.stdio[3]);
+        videoStream.pipe(ffmpegProcess.stdio[4]);
+        ffmpegProcess.stdio[5].pipe(result);
+    });
+    return result;
+};
+
+
 router.post('/video', (req, res) => {
     const url = req.body.testando
 
@@ -19,7 +48,7 @@ router.post('/video', (req, res) => {
         const teste = ytdl.getInfo(id)
 
         teste.then(test => {
-            // console.log(test.formats)
+            console.log(test.formats)
             // ytdl(url).pipe(fs.createWriteStream(test.videoDetails.title + '.mp4'))
             res.render('home', {video: test})
         })
@@ -33,6 +62,17 @@ router.get('/download/:id', (req, res) => {
     teste.then(test => {
         res.header('Content-Disposition', 'attachment; filename='+test.videoDetails.title+'.mp4')
         ytdl(req.params.id, {format: 'mp4'}).pipe(res)
+    })
+    
+})
+
+router.post('/download/:id/format', (req, res) => {
+    const info = ytdl.getInfo(req.params.id)
+    
+    info.then(info => {
+        let format = ytdl.chooseFormat(info.formats, { quality: req.body.itag})
+        res.header('Content-Disposition', 'attachment; filename='+info.videoDetails.title+'.mp4')
+        ytmux("https://www.youtube.com/watch?v="+req.params.id,  format).pipe(res)
     })
     
 })
