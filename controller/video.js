@@ -34,31 +34,6 @@ const ytmux = (link, marcos, options = {}) => {
 };
 
 const get = async (req, res) => {
-    let url = req.params.id
-    if(url.indexOf("https://") == -1) {
-        url = `https://www.youtube.com/watch?v=${url}`
-    }
-    const id = ytdl.getURLVideoID(url)
-    let inf = await ytdl.getInfo(id)
-    
-    let response = {
-        "Details":inf.videoDetails,
-        "Formats": []
-    }
-
-    for(let format of inf.formats) {
-        console.log(format.container)
-        if(format.container == 'mp4'){
-            response.Formats.push({
-                link:`${base_url}/video/get/${id}/${format.itag}`,
-                resolution: format.height,
-                mimeType: format.mimeType,
-                appLength: format.contentLength
-            })
-        }
-    }
-
-    res.json(response)
 }
 
 const Render = async (req, res) => {
