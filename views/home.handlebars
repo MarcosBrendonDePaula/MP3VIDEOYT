@@ -23,11 +23,11 @@
 {{/if}}
 
 <div class="container mt-3">
-    <form action="/video" method="post">
+    <form action="/video/view" method="post">
         {{#if video}}
-        <input type="text" name="testando" class="form-control" value="{{video.videoDetails.video_url}}">
+        <input type="text" name="id" class="form-control" value="{{video.videoDetails.video_url}}">
         {{else}}
-        <input type="text" name="testando" class="form-control" placeholder="https://youtube.com/...">
+        <input type="text" name="id" class="form-control" placeholder="https://youtube.com/...">
         {{/if}}
         <br>
         <div class="text-center">
@@ -104,10 +104,10 @@
 
 {{#if video}}
 <div class="container">
-    <form action="/video/get/{{video.videoDetails.videoId}}/format" method="post">
+    <form action="/video" method="post">
 
         <h2>Choose your quality</h2>
-
+        <input type="text" name="id" value="{{video.videoDetails.videoId}}" style="display:none;">
         <!--Load all the valids formats-->
         {{#each video.formats}}
         {{#if (compare_strings ./container 'mp4')}}

@@ -5,6 +5,7 @@ const fs = require('fs')
 const stream = require('stream');
 const cp = require('child_process');
 const ffmpeg = require('ffmpeg-static');
+const console = require('console');
 
 
 const ytmux = (link, marcos, options = {}) => {
@@ -17,7 +18,7 @@ const ytmux = (link, marcos, options = {}) => {
             '-i', 'pipe:3', '-i', 'pipe:4',
             '-map', '0:a', '-map', '1:v',
             '-c', 'copy',
-            '-f', 'matroska', 'pipe:5'
+            '-f', 'matroska', 'pipe:5',
         ], {
             windowsHide: true,
             stdio: [
@@ -32,24 +33,32 @@ const ytmux = (link, marcos, options = {}) => {
     return result;
 };
 
-const get = (req, res) => {
-    const url = req.body.testando
+const get = async (req, res) => {
+    let url = req.params.id
+    if(url.indexOf("https://") == -1) {
+        url = `https://www.youtube.com/watch?v=${url}`
+    }
+    const id = ytdl.getURLVideoID(url)
+    res.json(await ytdl.getInfo(id))
+}
 
-    if (url.length > 0) {
+const Render = async (req, res) => {
+    let url = req.params.id || req.body.id
+    if (url && url.length > 0) {
         
+        if(url.indexOf("https://") == -1) {
+            url = `https://www.youtube.com/watch?v=${url}`
+        }
+ 
         const id = ytdl.getURLVideoID(url)
+        
+        const teste = await ytdl.getInfo(id)
 
-        const teste = ytdl.getInfo(id)
-
-        teste.then(test => {
-            res.render('home', {video: test})
-        })
+        res.render('home', {video: teste})
     }else{
         res.render('home')
     }
 }
-
-
 
 const downloadBest = (req, res) => {
     const teste = ytdl.getInfo(req.params.id)
@@ -60,21 +69,25 @@ const downloadBest = (req, res) => {
     
 }
 
-
-
-const downloadSpecific = (req, res) => {
-    const info = ytdl.getInfo(req.params.id)
-    info.then(info => {
-        let format = ytdl.chooseFormat(info.formats, { quality: req.body.itag})
-        res.header('Content-Length',format.contentLength)
-        res.header('Content-Disposition', 'attachment; filename='+info.videoDetails.title+'.mp4')
+const downloadSpecific = async (req, res) => {
+    let url = req.params.id || req.body.id
+    if (url && url.length > 0) {
         
-        ytmux("https://www.youtube.com/watch?v="+req.params.id, req.body.itag).pipe(res)
-    })
+        if(url.indexOf("https://") == -1) {
+            url = `https://www.youtube.com/watch?v=${url}`
+        }
+ 
+        const id = ytdl.getURLVideoID(url)
+        const teste = await ytdl.getInfo(id)
+
+        res.header('Content-Disposition', 'attachment; filename='+teste.videoDetails.title+'.mp4')
+        ytmux("https://www.youtube.com/watch?v="+id, req.body.itag).pipe(res)
+    }
     
 }
 
 module.exports = {
+    Render,
     get,
     downloadBest,
     downloadSpecific,
