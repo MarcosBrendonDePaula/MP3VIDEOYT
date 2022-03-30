@@ -10,7 +10,9 @@ Router.post('/', controller.downloadSpecific)
 //parte da api
 Router.get('/info/:id', controller.get)
 Router.get('/get/:id', controller.downloadBest)
+Router.get('/get/:id/:format', controller.downloadSpecific)
 Router.post('/get/:id/format', controller.downloadSpecific)
+
 
 
 module.exports = Router

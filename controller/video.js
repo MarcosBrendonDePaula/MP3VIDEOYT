@@ -6,7 +6,7 @@ const stream = require('stream');
 const cp = require('child_process');
 const ffmpeg = require('ffmpeg-static');
 const console = require('console');
-
+const base_url = process.env.LINKBASE || "http://127.0.0.1:3000"
 
 const ytmux = (link, marcos, options = {}) => {
     const result = new stream.PassThrough({ highWaterMark: options.highWaterMark || 1024 * 512 });
@@ -39,7 +39,26 @@ const get = async (req, res) => {
         url = `https://www.youtube.com/watch?v=${url}`
     }
     const id = ytdl.getURLVideoID(url)
-    res.json(await ytdl.getInfo(id))
+    let inf = await ytdl.getInfo(id)
+    
+    let response = {
+        "Details":inf.videoDetails,
+        "Formats": []
+    }
+
+    for(let format of inf.formats) {
+        console.log(format.container)
+        if(format.container == 'mp4'){
+            response.Formats.push({
+                link:`${base_url}/video/get/${id}/${format.itag}`,
+                resolution: format.height,
+                mimeType: format.mimeType,
+                appLength: format.contentLength
+            })
+        }
+    }
+
+    res.json(response)
 }
 
 const Render = async (req, res) => {
@@ -66,11 +85,12 @@ const downloadBest = (req, res) => {
         res.header('Content-Disposition', 'attachment; filename='+test.videoDetails.title+'.mp4')
         ytdl(req.params.id, {format: 'mp4'}).pipe(res)
     })
-    
 }
 
 const downloadSpecific = async (req, res) => {
     let url = req.params.id || req.body.id
+    let format = req.params.format || req.body.itag
+
     if (url && url.length > 0) {
         
         if(url.indexOf("https://") == -1) {
@@ -81,7 +101,7 @@ const downloadSpecific = async (req, res) => {
         const teste = await ytdl.getInfo(id)
 
         res.header('Content-Disposition', 'attachment; filename='+teste.videoDetails.title+'.mp4')
-        ytmux("https://www.youtube.com/watch?v="+id, req.body.itag).pipe(res)
+        ytmux("https://www.youtube.com/watch?v="+id, format).pipe(res)
     }
     
 }
