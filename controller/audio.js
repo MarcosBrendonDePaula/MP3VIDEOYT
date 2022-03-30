@@ -1,15 +1,7 @@
-"use strict";
 const os = require("os")
 const fs = require('fs');
-
-const base_url = process.env.LINKBASE || "http://127.0.0.1"
-const remove_timeout = process.env.RTIMEOUT || (10*60000)
-const remove_timeout_delay = process.env.RTIMEOUTDELAY || 5000
-
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
-var pathToFfmpeg = require('ffmpeg-static');
 
-const mp3_local = "./public/mp3";
 (async ()=>{
     if (!fs.existsSync("./public")) {
         fs.mkdirSync("./public")
@@ -21,6 +13,17 @@ const mp3_local = "./public/mp3";
 
 const Cache = {
 };
+
+
+const base_url = process.env.LINKBASE || "http://127.0.0.1"
+const remove_timeout = process.env.RTIMEOUT || (10*60000)
+const remove_timeout_delay = process.env.RTIMEOUTDELAY || 5000
+
+
+var pathToFfmpeg = require('ffmpeg-static');
+
+const mp3_local = "./public/mp3";
+
 
 const Render = (req,res) => {
     res.render("audio/list",{quee:Cache})

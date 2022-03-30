@@ -4,7 +4,7 @@ const os = require('os')
 const app = require('./app');
 
 
-const numCpus = 1; 
+const numCpus = os.cpus().length; 
 
 if (cluster.isMaster){
   for(let i=0; i<numCpus; i++){ 

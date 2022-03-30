@@ -26,6 +26,7 @@
     "morgan": "^1.10.0",
     "p-locate": "^6.0.0",
     "path-exists": "^5.0.0",
+    "redis": "^4.0.4",
     "typescript": "^4.6.2",
     "youtube-mp3-downloader": "^0.7.10",
     "ytdl-core": "^4.11.0"
