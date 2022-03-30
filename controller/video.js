@@ -75,7 +75,7 @@ const downloadSpecific = async (req, res) => {
         const id = ytdl.getURLVideoID(url)
         const teste = await ytdl.getInfo(id)
 
-        res.header('Content-Disposition', 'attachment; filename='+teste.videoDetails.title+'.mp4')
+        res.header('Content-Disposition', 'attachment; filename='+encodeURI(teste.videoDetails.title)+'.mp4')
         ytmux("https://www.youtube.com/watch?v="+id, format).pipe(res)
     }
     
