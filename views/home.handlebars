@@ -110,26 +110,24 @@
         <input type="text" name="id" value="{{video.videoDetails.videoId}}" style="display:none;">
         <!--Load all the valids formats-->
         {{#each video.formats}}
-        {{#if (compare_strings ./container 'mp4')}}
-        <div>
-            <input type="radio" name="itag" value="{{itag}}">
-            <label for="choice1">{{height}}p - {{./video.videoDetails.title}} - {{./container}} - {{mimeType}} - <a
-                    href="{{url}}">link</a> - {{itag}} - </label>
-            <label id="{{itag}}">{{contentLength}}</label>
+            {{#if (compare_strings ./container 'mp4')}}
+            <div>
+                <input type="radio" name="itag" value="{{itag}}">
+                <label for="choice1">{{height}}p - {{./video.videoDetails.title}} - {{./container}} - {{mimeType}} - <a
+                        href="{{url}}">link</a> - {{itag}} - </label>
+                <label id="{{itag}}">{{contentLength}}</label>
 
-        </div>
+            </div>
 
-        <script>
+            <script>
 
-            document.getElementById('{{itag}}').innerText = formatBytes(document.getElementById('{{itag}}').innerText)
-        </script>
-        {{else}}
-        {{/if}}
-        {{else}}
+                document.getElementById('{{itag}}').innerText = formatBytes(document.getElementById('{{itag}}').innerText)
+            </script>
+            {{/if}}
         {{/each}}
-
-        <button type="submit" class="btn btn-primary">Download</button>
-
+        
+        <button type="submit" class="btn btn-primary">Download Video</button>
+        {{!-- <button type="button" onclick="window.location.href = '/audio/get/{{video.videoDetails.videoId}}/file'" class="btn btn-primary">Download Audio</button> --}}
     </form>
 </div>
 
