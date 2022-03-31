@@ -151,7 +151,8 @@
 
     </form>
     <div class="col-md-6">
-        <form action="/audio/get/{{video.videoDetails.videoId}}" method="get">
+        <form action="/audio" method="post">
+            <input type="hidden" name="id" value="{{video.videoDetails.videoId}}">
             <button class="btn btn-primary" type="submit">Download audio</button>
         </form>
     </div>
