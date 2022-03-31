@@ -91,6 +91,7 @@
 <script src="/js/infos.js"></script>
 
 {{#if video}}
+{{>AudioDownload}}
 <div class="container mt-4">
     <form action="/video" method="post">
 
@@ -147,21 +148,16 @@
         {{/video_formats}}
         <div class="row">
             <div class="col-md-6 text-end"><button type="submit" class="btn btn-primary">Download Video</button>
-            </div>
-
+        </div>
     </form>
     <div class="col-md-6">
         <form action="/audio" method="post">
-            <button class="btn btn-primary" type="button"
-                onclick="window.location.href = '/audio/get/{{video.videoDetails.videoId}}/direct'">Download
-                Audio</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalDownloadAudio" onclick="downloadAudio()" >
+                Download Audio
+            </button>
         </form>
     </div>
-
 </div>
-</div>
-
-
 
 {{else}}
 

@@ -20,7 +20,7 @@ const Cache = {
 };
 
 
-const base_url = process.env.LINKBASE || "http://127.0.0.1"
+const base_url = process.env.LINKBASE || "http://127.0.0.1:3000"
 const remove_timeout = process.env.RTIMEOUT || (10*60000)
 const remove_timeout_delay = process.env.RTIMEOUTDELAY || 5000
 
@@ -109,70 +109,8 @@ const download = async(req, res) =>{
 }
 
 const direct_download = async (req,res) => {
-    let info;
-    let videoUrl = "https://www.youtube.com/watch?v="+req.body.id;
-    try {
-      info = await ytdl.getInfo(videoUrl, { quality: 'highestaudio'})
-    } catch (err){
-      res.json(err)
-    }
+    let video_id = req.body.id
 
-    const videoTitle = sanitize(info.videoDetails.title);
-    
-    let artist = 'Unknown';
-    let title = 'Unknown';
-
-    if (videoTitle.indexOf('-') > -1) {
-      let temp = videoTitle.split('-');
-      if (temp.length >= 2) {
-        artist = temp[0].trim();
-        title = temp[1].trim();
-      }
-    } else {
-      title = videoTitle;
-    }
-
-    const stream = ytdl.downloadFromInfo(info, { quality: 'highestaudio'});
-    
-    let size = -20
-
-    stream.on('response', function(httpResponse) {
-      size = parseInt((httpResponse.headers['content-range'])?httpResponse.headers['content-range'].split('/')[1]:httpResponse.headers['content-length']);
-    })
-
-    stream.on('error', function(err){
-      size = -21;
-      callback(err, null);
-    });
-
-    // waiting stream response
-    while(size < -19){
-      //check if erro
-      if(size == -21){
-        return;
-      }
-      //sleeping
-      await new Promise(r => setTimeout(r, 1));
-    }
-
-    const audioBitrate = info.formats.find(format => !!format.audioBitrate).audioBitrate
-    let outputOptions = [
-      '-id3v2_version', '4',
-      '-metadata', 'title=' + title,
-      '-metadata', 'artist=' + artist
-    ];
-
-    let ff = new ffmpeg(stream)
-    .audioBitrate(audioBitrate || 192)
-    .withAudioCodec('libmp3lame')
-    .toFormat('mp3')
-    .outputOptions(...outputOptions)
-    res.header('Content-Disposition', 'attachment; filename='+encodeURI(info.videoDetails.title)+'.mp3')
-    ff.output(res,{ end: true })
-    ff.on("error", (err)=>{
-        console.log("Um stream foi cancelado",err)
-    })
-    ff.run()
 }
 
 module.exports={

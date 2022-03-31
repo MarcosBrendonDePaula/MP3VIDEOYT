@@ -1,0 +1,56 @@
+<div class="modal fade" id="ModalDownloadAudio" tabindex="-1" aria-labelledby="ModalDownloadAudio" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalDownloadAudioLabel">Download de Audio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+            <form class="form">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="progress" style="border: 1px solid black;">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" style="width: 100%"aria-valuemax="100">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span>Preparando, Tempo estimado: <span class="estimativa">0 segundos</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script defer>
+    let runing_update = false; 
+    function Update(){
+        $.getJSON("/audio/get/{{video.videoDetails.videoId}}", function( data ) {
+            runing_update = true;
+            document.querySelector(".progress-bar").style.width = `${data.progress.percentage}%`;
+            document.querySelector("#ModalDownloadAudio")
+            .querySelector(".modal-footer")
+            .querySelector("span")
+            .querySelector("span")
+            .textContent = `${Math.round(data.progress.estimative *100 )} segundos`
+            if(data.progress.percentage != 100){
+                setTimeout(Update,2000);
+                return;
+            }
+            runing_update = false
+            window.location.href = `${data.file}`
+            return;
+        });
+    }
+
+    function downloadAudio(){
+        document.querySelector(".progress-bar").style.width = "1%";
+        Update()
+    }
+
+</script>
