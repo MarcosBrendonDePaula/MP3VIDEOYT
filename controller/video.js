@@ -5,8 +5,11 @@ const fs = require('fs')
 const stream = require('stream');
 const cp = require('child_process');
 const ffmpeg = require('ffmpeg-static');
-const console = require('console');
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000"
+
+(async()=>{
+    ytdl.getVideoID("EG8VoodMIBM")
+})()
 
 const ytmux = (link, marcos, options = {}) => {
     const result = new stream.PassThrough({ highWaterMark: options.highWaterMark || 1024 * 512 });
@@ -38,6 +41,7 @@ const get = async (req, res) => {
 
 const Render = async (req, res) => {
     let url = req.params.id || req.body.id
+    
     if (url && url.length > 0) {
         
         if(url.indexOf("https://") == -1) {

@@ -1,5 +1,5 @@
-"use strict";
 const ytdl = require('ytdl-core')
+"use strict";
 
 const YT_KEY = process.env.YTKEY || "AIzaSyBBNRRlenbcURj_WMmQjzIZHAMYlx5OfeA"; 
 
