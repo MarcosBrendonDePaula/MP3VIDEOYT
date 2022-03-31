@@ -144,16 +144,12 @@
         {{/each}}
         <div class="row">
             <div class="col-md-6 text-end"><button type="submit" class="btn btn-primary">Download Video</button>
-                {{!-- <button type="button"
-                    onclick="window.location.href = '/audio/get/{{video.videoDetails.videoId}}/file'"
-                    class="btn btn-primary">Download Audio</button> --}}
             </div>
 
     </form>
     <div class="col-md-6">
         <form action="/audio" method="post">
-            <input type="hidden" name="id" value="{{video.videoDetails.videoId}}">
-            <button class="btn btn-primary" type="submit">Download audio</button>
+            <button class="btn btn-primary" type="button" onclick="window.location.href = '/audio/get/{{video.videoDetails.videoId}}/direct'">Download Audio</button>
         </form>
     </div>
 

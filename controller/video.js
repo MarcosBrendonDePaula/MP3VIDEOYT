@@ -5,11 +5,11 @@ const fs = require('fs')
 const stream = require('stream');
 const cp = require('child_process');
 const ffmpeg = require('ffmpeg-static');
-const base_url = process.env.LINKBASE || "http://127.0.0.1:3000"
+const base_url = process.env.LINKBASE || "http://127.0.0.1:3000";
 
 (async()=>{
     ytdl.getVideoID("EG8VoodMIBM")
-})()
+})();
 
 const ytmux = (link, marcos, options = {}) => {
     const result = new stream.PassThrough({ highWaterMark: options.highWaterMark || 1024 * 512 });

@@ -6,7 +6,8 @@ const controller = require('../controller/audio')
 //https://www.npmjs.com/package/node-youtube-music
 
 Router.get("/",controller.Render)
-Router.get("/get/:videoId",controller.checkForm,controller.download)
+Router.get("/get/:videoId",controller.checkForm, controller.download)
+Router.get("/get/:videoId/direct",controller.checkForm, controller.direct_download)
 Router.post("/",controller.checkForm,controller.download)
 
 module.exports = Router
