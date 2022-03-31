@@ -51,11 +51,12 @@ const Render = async (req, res) => {
         const id = ytdl.getURLVideoID(url)
         
         ytdl.getInfo(id).then(info =>{
-            res.render('home', {video: info})
+            // console.log(info.formats)
+            res.render('home', {video: info, title: info.videoDetails.title})
         })
 
     }else{
-        res.render('home')
+        res.render('home', {title: 'MP3VIDEOYT'})
     }
 }
 
