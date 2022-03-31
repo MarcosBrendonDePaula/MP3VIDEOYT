@@ -162,17 +162,17 @@ const direct_download = async (req,res) => {
       '-metadata', 'artist=' + artist
     ];
 
-    const proc = new ffmpeg(stream)
+    let ff = new ffmpeg(stream)
     .audioBitrate(audioBitrate || 192)
     .withAudioCodec('libmp3lame')
     .toFormat('mp3')
     .outputOptions(...outputOptions)
     res.header('Content-Disposition', 'attachment; filename='+encodeURI(info.videoDetails.title)+'.mp3')
-    //res.header('Content-Length',`${size}`)
-    proc.on("error", (err)=>{
-        console.log("Um stream foi cancelado")
+    ff.output(res,{ end: true })
+    ff.on("error", (err)=>{
+        console.log("Um stream foi cancelado",err)
     })
-    proc.pipe(res)
+    ff.run()
 }
 
 module.exports={
