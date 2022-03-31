@@ -98,9 +98,10 @@
         <input type="text" name="id" value="{{video.videoDetails.videoId}}" style="display:none;">
         <!--Load all the valids formats-->
 
-        {{#each video.formats}}
+        {{#video_formats 1 5 video.formats}}
         {{#if (compare_strings ./hasVideo true)}}
-        <div class="row">
+        <div class="row" onmouseover="mouseover_background({{itag}})" onmouseout="mouseout_background({{itag}})"
+            onclick="mouse_click({{itag}})" id="{{itag}}">
             <div class="col-md-1">
                 <input type="radio" name="itag" value="{{itag}}">
                 <label for="">{{height}}p</label>
@@ -123,7 +124,7 @@
             </div>
 
             <div class="col-md-1 text-end">
-                <label id="{{itag}}">{{contentLength}}</label>
+                <label id="{{itag}}e">{{contentLength}}</label>
             </div>
         </div>
 
@@ -138,10 +139,12 @@
 
         <script>
 
-            document.getElementById('{{itag}}').innerText = formatBytes(document.getElementById('{{itag}}').innerText)
+            document.getElementById('{{itag}}e').innerText = formatBytes(document.getElementById('{{itag}}e').innerText)
         </script>
+        {{else}}
         {{/if}}
-        {{/each}}
+        {{else}}
+        {{/video_formats}}
         <div class="row">
             <div class="col-md-6 text-end"><button type="submit" class="btn btn-primary">Download Video</button>
             </div>
@@ -149,7 +152,9 @@
     </form>
     <div class="col-md-6">
         <form action="/audio" method="post">
-            <button class="btn btn-primary" type="button" onclick="window.location.href = '/audio/get/{{video.videoDetails.videoId}}/direct'">Download Audio</button>
+            <button class="btn btn-primary" type="button"
+                onclick="window.location.href = '/audio/get/{{video.videoDetails.videoId}}/direct'">Download
+                Audio</button>
         </form>
     </div>
 
@@ -162,3 +167,23 @@
 
 
 {{/if}}
+
+<script>
+    function mouseover_background(id) {
+        const element = document.getElementById(id)
+        element.style.backgroundColor = 'blue'
+
+    }
+
+    function mouseout_background(id) {
+        const element = document.getElementById(id)
+        element.style.backgroundColor = 'white'
+
+    }
+
+    function mouse_click(id) {
+        const element = document.getElementById(id)
+        element.firstElementChild.firstElementChild.checked = true
+    }
+
+</script>

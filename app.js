@@ -18,7 +18,8 @@ app.use(bodyParser.json());
 var hbs = handlebars.create({
     // Specify helpers which are only registered on this instance.
     helpers: {
-      compare_strings: require('./helpers/compare_strings')
+      compare_strings: require('./helpers/compare_strings'),
+      video_formats: require('./helpers/print_videoFormats')
     }
   });
 
