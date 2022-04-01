@@ -103,7 +103,7 @@ const download = async(req, res) =>{
         })
         
         YD.on("finished",async (err, data)=>{
-            data.progress = await getCache(video_id).progress
+            data.progress = (await getCache(video_id)).progress
             data.stats = "finished"
             data.file = encodeURI(data.file.replace("./public",base_url))
             await setCache(video_id,data)
