@@ -8,7 +8,7 @@ const ffmpeg = require('ffmpeg-static');
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000";
 
 (async()=>{
-    console.log(await ytdl.getVideoID("EG8VoodMIBM"))
+    console.log(await ytdl.getInfo("EG8VoodMIBM"))
 })();
 
 const ytmux = (link, marcos, options = {}) => {
