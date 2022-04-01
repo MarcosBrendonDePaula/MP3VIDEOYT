@@ -80,7 +80,7 @@ const download = async(req, res) =>{
             "outputPath": mp3_local,    // Output file location (default: the home directory)
             "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
             "queueParallelism": os.cpus().length,                  // Download parallelism (default: 1)
-            "progressTimeout": 1000,                // Interval in ms for the progress reports (default: 1000)
+            "progressTimeout": 2000,                // Interval in ms for the progress reports (default: 1000)
             "allowWebm": false                      // Enable download from WebM sources (default: false)
         })
         

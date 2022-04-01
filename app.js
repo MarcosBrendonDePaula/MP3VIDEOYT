@@ -14,8 +14,12 @@ app.set('env', NODE_ENV);
 app.use(logger('tiny'));
 app.use(bodyParser.json());
 
-// Handlebars
-var hbs = handlebars.create({
+const ytdl = require('ytdl-core');
+(async()=>{
+  await ytdl.getInfo("EG8VoodMIBM")
+
+  // Handlebars
+  var hbs = handlebars.create({
     // Specify helpers which are only registered on this instance.
     helpers: {
       compare_strings: require('./helpers/compare_strings'),
@@ -23,18 +27,18 @@ var hbs = handlebars.create({
     }
   });
 
-app.engine('handlebars', hbs.engine)
-app.set('view engine', 'handlebars')
+  app.engine('handlebars', hbs.engine)
+  app.set('view engine', 'handlebars')
 
-// Public
-app.use(express.static(path.join(__dirname, 'public')))
+  // Public
+  app.use(express.static(path.join(__dirname, 'public')))
 
-// Body parser
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+  // Body parser
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
 
-app.use(function (req, res, next) {
+  app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,10 +46,15 @@ app.use(function (req, res, next) {
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     next();
-});
+  });
 
 
-// Routes
-require('./routes/routes')(app)
+  // Routes
+  require('./routes/routes')(app)
+
+})();
+
+
+
 
 module.exports = app
