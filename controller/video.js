@@ -8,7 +8,7 @@ const ffmpeg = require('ffmpeg-static');
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000";
 
 (async()=>{
-    ytdl.getVideoID("EG8VoodMIBM")
+    console.log(await ytdl.getVideoID("EG8VoodMIBM"))
 })();
 
 const ytmux = (link, marcos, options = {}) => {
@@ -61,8 +61,7 @@ const Render = async (req, res) => {
 }
 
 const downloadBest = (req, res) => {
-    const teste = ytdl.getInfo(req.params.id)
-    teste.then(test => {
+    ytdl.getInfo(req.params.id).then(test => {
         res.header('Content-Disposition', 'attachment; filename='+test.videoDetails.title+'.mp4')
         ytdl(req.params.id, {format: 'mp4'}).pipe(res)
     })
