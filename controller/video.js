@@ -8,10 +8,6 @@ const cp = require('child_process');
 const ffmpeg = require('ffmpeg-static');
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000";
 
-(async()=>{
-    await ytdl.getInfo("EG8VoodMIBM")
-})();
-
 const ytmux = (link, marcos, options = {}) => {
     const result = new stream.PassThrough({ highWaterMark: options.highWaterMark || 1024 * 512 });
     ytdl.getInfo(link, options).then(info => {                            //Aqui que define a resolução no caso o highest é a melhor disponivel no video

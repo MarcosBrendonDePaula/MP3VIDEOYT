@@ -1,13 +1,29 @@
 const os = require("os")
 const fs = require('fs');
+const cluster = require('cluster')
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 
-const ytdl = require('ytdl-core');
-const sanitize = require('sanitize-filename');
-const ffmpeg = require('fluent-ffmpeg');
+const redis = require('redis');
+let client = redis.createClient({
+    password:"RcYKFz0MxXXjDBqBdkQQ8yZJS2Uz3miI",
+    port: 17680,
+    url:"redis://:RcYKFz0MxXXjDBqBdkQQ8yZJS2Uz3miI@redis-17680.c74.us-east-1-4.ec2.cloud.redislabs.com:17680"
+});
 
 (async ()=>{
+    client.on('connect', () => {
+        console.log('REDIS READY');
+        if(cluster.isMaster){
+            client.flushAll('ASYNC', ()=>{});
+        }
+    });
     
+    client.on('error', (e) => {
+        console.log('REDIS ERROR', e);
+    });
+    
+    await client.connect()
+
     if (!fs.existsSync("./public")) {
         fs.mkdirSync("./public")
     }
@@ -16,8 +32,19 @@ const ffmpeg = require('fluent-ffmpeg');
     }
 })();
 
+async function getCache(id=""){
+    let res = await client.get(id)
+    if(!res) return null;
+    return JSON.parse(await client.get(id))
+}
+
+async function setCache(id="",obj={}){
+    await client.set(id,JSON.stringify(obj))
+}
+
 const Cache = {
 };
+
 
 
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000"
@@ -48,28 +75,19 @@ const checkForm = async (req,res, next)=>{
 }
 
 const storage_manipulation = async (id)=>{
-    try{
-        while (Cache[id]){
-            if(Cache[id].deleting <= 0)
-            {
-                fs.unlinkSync("./public/mp3/"+Cache[id].videoTitle+".mp3");
-                delete Cache[id];
-                return;    
-            }
-            Cache[id].deleting -= remove_timeout_delay
-            await new Promise(r => setTimeout(r, remove_timeout_delay));
-        }
-    }catch(err){
-        console.log(err);
-        return;
-    }
+    setTimeout(async ()=>{
+        let  file = await client.get(id)
+        fs.unlinkSync("./public/mp3/"+file.videoTitle+".mp3");
+        await client.del(id)
+    },600000)
 }
 
 const download = async(req, res) =>{
     let video_id = req.body.id
-    if(Cache[video_id] == undefined){
-        Cache[video_id] = {}
-        
+    let cache = await getCache(video_id)
+    if(!cache){
+        await setCache(video_id,{})
+
         let send = (value)=>{
             res.send(value)
             send = (value)=>{}
@@ -84,19 +102,18 @@ const download = async(req, res) =>{
             "allowWebm": false                      // Enable download from WebM sources (default: false)
         })
         
-        YD.on("finished",(err, data)=>{
-            data.progress = Cache[video_id].progress
-            data.deleting = remove_timeout
+        YD.on("finished",async (err, data)=>{
+            data.progress = await getCache(video_id).progress
             data.stats = "finished"
             data.file = encodeURI(data.file.replace("./public",base_url))
-            Cache[video_id] = data
+            await setCache(video_id,data)
             storage_manipulation(video_id)
         })
 
-        YD.on("progress",(progress)=>{
+        YD.on("progress",async (progress)=>{
             progress.stats = "downloading"
-            Cache[video_id] = progress;
-            send(Cache[video_id])
+            await setCache(video_id,progress)
+            send(progress)
         })
 
         YD.on("error", function(error) {
@@ -104,7 +121,7 @@ const download = async(req, res) =>{
         })
         YD.download(video_id);
     }else{
-        res.json(Cache[video_id])
+        res.json(cache)
     }
 }
 
