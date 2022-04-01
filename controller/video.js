@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core')
 const fs = require('fs')
+const sanitize = require('sanitize-filename');
 //TESTANDO
 
 const stream = require('stream');
@@ -8,7 +9,7 @@ const ffmpeg = require('ffmpeg-static');
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000";
 
 (async()=>{
-    console.log(await ytdl.getInfo("EG8VoodMIBM"))
+    await ytdl.getInfo("EG8VoodMIBM")
 })();
 
 const ytmux = (link, marcos, options = {}) => {
@@ -79,7 +80,7 @@ const downloadSpecific = async (req, res) => {
  
         const id = ytdl.getURLVideoID(url)
         ytdl.getInfo(id).then((teste) =>{
-            res.header('Content-Disposition', 'attachment; filename='+encodeURI(teste.videoDetails.title)+'.mp4')
+            res.header('Content-Disposition', 'attachment; filename='+encodeURI(sanitize(teste.videoDetails.title))+'.mp4')
             ytmux("https://www.youtube.com/watch?v="+id, format).pipe(res)
         })
     }

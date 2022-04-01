@@ -88,7 +88,7 @@ const download = async(req, res) =>{
             data.progress = Cache[video_id].progress
             data.deleting = remove_timeout
             data.stats = "finished"
-            data.file = data.file.replace("./public",base_url)
+            data.file = encodeURI(data.file.replace("./public",base_url))
             Cache[video_id] = data
             storage_manipulation(video_id)
         })
