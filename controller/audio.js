@@ -14,7 +14,9 @@ let client = redis.createClient({
     client.on('connect', () => {
         console.log('REDIS READY');
         if(cluster.isMaster){
-            client.flushAll('ASYNC', ()=>{});
+            client.flushAll('ASYNC', ()=>{
+                console.log("CACHE DB RESETADO")
+            });
         }
     });
     

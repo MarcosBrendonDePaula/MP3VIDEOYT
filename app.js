@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 const ytdl = require('ytdl-core');
 (async()=>{
-  await ytdl.getInfo("EG8VoodMIBM")
+  await ytdl.getInfo("41tWZlh4SP8")
 
   // Handlebars
   var hbs = handlebars.create({
