@@ -18,6 +18,14 @@ const ytdl = require('ytdl-core');
 (async()=>{
   await ytdl.getInfo("41tWZlh4SP8")
 
+  app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+  });
+
   // Handlebars
   var hbs = handlebars.create({
     // Specify helpers which are only registered on this instance.
@@ -36,18 +44,6 @@ const ytdl = require('ytdl-core');
   // Body parser
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
-
-  app.use(function (req, res, next) {
-
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
-
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    next();
-  });
-
 
   // Routes
   require('./routes/routes')(app)
