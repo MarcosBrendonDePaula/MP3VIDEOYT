@@ -78,7 +78,7 @@ const checkForm = async (req,res, next)=>{
 
 const storage_manipulation = async (id)=>{
     setTimeout(async ()=>{
-        let  file = await client.get(id)
+        let  file = await getCache(id)
         fs.unlinkSync("./public/mp3/"+file.videoTitle+".mp3");
         await client.del(id)
     },600000)
