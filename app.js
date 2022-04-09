@@ -1,6 +1,7 @@
 const express = require('express');
 const handlebars = require ('express-handlebars');
 const bodyParser = require('body-parser');
+const cluster = require('cluster')
 const logger = require('morgan');
 const path = require('path');
 const app = express();
@@ -22,9 +23,7 @@ async function forceLoad(){
       await ytdl.getInfo("41tWZlh4SP8")
       return;
     } catch(err) {
-      console.log(err)
-      await forceLoad()
-      return
+      cluster.emit("exit");
     }
   }
   
