@@ -15,9 +15,23 @@ app.use(logger('tiny'));
 app.use(bodyParser.json());
 
 const ytdl = require('ytdl-core');
-(async()=>{
-  await ytdl.getInfo("41tWZlh4SP8")
 
+async function forceLoad(){
+  while (true) {
+    try{
+      await ytdl.getInfo("41tWZlh4SP8")
+      return;
+    } catch(err) {
+      console.log(err)
+      await forceLoad()
+      return
+    }
+  }
+  
+}
+
+(async()=>{
+  await forceLoad()
   app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
