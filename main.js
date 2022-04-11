@@ -6,19 +6,27 @@ const app = require('./app');
 
 const numCpus = os.cpus().length; 
 
+cluster.on('exit',(worker, code, signal)=>{
+  if (!cluster.isMaster){
+    console.log(`worker morreu!`)
+    console.log("Iniciando novo worker")
+    cluster.fork()
+
+    app.listen(app.get('port'), () => {
+      console.log(
+        `worker ${process.pid} on Port ${app.get(
+          'port'
+        )} | Environment : ${app.get('env')}`
+      );
+    });
+  }
+})
+
 if (cluster.isMaster){
   for(let i=0; i<numCpus; i++){ 
     cluster.fork()
   }
   
-  cluster.on('exit',(worker, code, signal)=>{
-    try{
-      console.log(`worker ${worker.process.pid} morreu!`)
-      console.log("Iniciando novo worker")
-    }catch(err){}
-    cluster.fork()
-  })
-
 }else{
   app.listen(app.get('port'), () => {
     console.log(
