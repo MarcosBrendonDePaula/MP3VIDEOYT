@@ -27,7 +27,7 @@
     "p-locate": "^6.0.0",
     "path-exists": "^5.0.0",
     "redis": "^4.0.6",
-    "redisscan": "^2.0.0",
+    "redisscan": "^1.1.0",
     "typescript": "^4.6.2",
     "youtube-mp3-downloader": "^0.7.10",
     "ytdl-core": "^4.11.0"
