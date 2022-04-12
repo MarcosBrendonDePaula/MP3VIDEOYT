@@ -43,10 +43,3 @@ if (cluster.isMaster){
     );
   });
 }
-app.listen(app.get('port'), () => {
-  console.log(
-    `worker ${process.pid} on Port ${app.get(
-      'port'
-    )} | Environment : ${app.get('env')}`
-  );
-});
