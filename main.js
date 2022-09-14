@@ -1,6 +1,5 @@
 const cluster = require('cluster')
 const os = require('os')
-
 const app = require('./app');
 
 async function forceLoad(){
@@ -13,12 +12,14 @@ async function forceLoad(){
       process.exit()
     }
   }
-  
 }
 
 const numCpus = os.cpus().length; 
 
 if (cluster.isMaster){
+  
+  require('./controller/Cache').Get()
+
   for(let i=0; i<numCpus; i++){ 
     cluster.fork()
   }

@@ -34,6 +34,7 @@ const ytmux = (link, marcos, options = {}) => {
 };
 
 const get = async (req, res) => {
+
 }
 
 const Render = async (req, res) => {
