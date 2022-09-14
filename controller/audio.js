@@ -1,31 +1,10 @@
 const os = require("os")
 const fs = require('fs');
-const cluster = require('cluster')
 const YoutubeMp3Downloader = require("../remake/YoutubeMp3DownloaderMV");
 
-const redis = require('redis');
-let client = redis.createClient({
-    password:"RcYKFz0MxXXjDBqBdkQQ8yZJS2Uz3miI",
-    port: 17680,
-    url:"redis://:RcYKFz0MxXXjDBqBdkQQ8yZJS2Uz3miI@redis-17680.c74.us-east-1-4.ec2.cloud.redislabs.com:17680"
-});
+const CacheController = require('./Cache').Get();
 
 (async ()=>{
-    client.on('connect', () => {
-        console.log('REDIS READY');
-        if(cluster.isMaster){
-            client.flushAll('ASYNC', ()=>{
-                console.log("CACHE DB RESETADO")
-            });
-        }
-    });
-    
-    client.on('error', (e) => {
-        console.log('REDIS ERROR', e);
-    });
-    
-    await client.connect()
-
     if (!fs.existsSync("./public")) {
         fs.mkdirSync("./public")
     }
@@ -34,20 +13,11 @@ let client = redis.createClient({
     }
 })();
 
-async function getCache(id=""){
-    let res = await client.get(id)
-    if(!res) return null;
-    return JSON.parse(await client.get(id))
-}
-
-async function setCache(id="",obj={}){
-    await client.set(id,JSON.stringify(obj))
-}
-
-const Cache = {
+var Cache = {
 };
 
-
+const onChangeCache = (cache) => {Cache = cache}
+CacheController.addListner(onChangeCache)
 
 const base_url = process.env.LINKBASE || "http://127.0.0.1:3000"
 const remove_timeout = process.env.RTIMEOUT || (10*60000)
@@ -78,17 +48,17 @@ const checkForm = async (req,res, next)=>{
 
 const storage_manipulation = async (id)=>{
     setTimeout(async ()=>{
-        let  file = await getCache(id)
+        let  file = Cache[id]
         fs.unlinkSync("./public/mp3/"+file.videoTitle+".mp3");
-        await client.del(id)
+        CacheController.remObject(id)
     },600000)
 }
 
 const download = async(req, res) =>{
     let video_id = req.body.id
-    let cache = await getCache(video_id)
+    let cache = Cache[video_id]
     if(!cache){
-        await setCache(video_id,{})
+        CacheController.addObject(video_id, {})
 
         let send = (value)=>{
             res.send(value)
@@ -105,16 +75,16 @@ const download = async(req, res) =>{
         })
         
         YD.on("finished",async (err, data)=>{
-            data.progress = (await getCache(video_id)).progress
+            data.progress = Cache[video_id].progress
             data.stats = "finished"
             data.file = encodeURI(data.file.replace("./public",base_url))
-            await setCache(video_id,data)
+            CacheController.addObject(video_id, data)
             storage_manipulation(video_id)
         })
 
         YD.on("progress",async (progress)=>{
             progress.stats = "downloading"
-            await setCache(video_id,progress)
+            CacheController.addObject(video_id, progress)
             send(progress)
         })
 
