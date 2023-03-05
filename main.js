@@ -15,32 +15,42 @@ async function forceLoad(){
 }
 
 const numCpus = os.cpus().length; 
+require('./controller/Cache').Get()
 
-if (cluster.isMaster){
+app.listen(app.get('port'),async () => {
+  await forceLoad()
+  console.log(
+    `worker ${process.pid} on Port ${app.get(
+      'port'
+    )} | Environment : ${app.get('env')}`
+  );
+});
+
+// if (cluster.isMaster){
   
-  require('./controller/Cache').Get()
+//   require('./controller/Cache').Get()
 
-  for(let i=0; i<1; i++){ 
-    cluster.fork()
-  }
+//   for(let i=0; i<numCpus; i++){ 
+//     cluster.fork()
+//   }
   
-  cluster.on("exit", async (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
-    console.log("Let's fork another worker!");
-    cluster.fork();
-    await new Promise(r => setTimeout(r, 5000));
-  });
+//   cluster.on("exit", async (worker, code, signal) => {
+//     console.log(`worker ${worker.process.pid} died`);
+//     console.log("Let's fork another worker!");
+//     cluster.fork();
+//     await new Promise(r => setTimeout(r, 5000));
+//   });
 
-} else {
+// } else {
   
-  console.log(`Worker ${process.pid} started`);
+//   console.log(`Worker ${process.pid} started`);
 
-  app.listen(app.get('port'),async () => {
-    await forceLoad()
-    console.log(
-      `worker ${process.pid} on Port ${app.get(
-        'port'
-      )} | Environment : ${app.get('env')}`
-    );
-  });
-}
+//   app.listen(app.get('port'),async () => {
+//     await forceLoad()
+//     console.log(
+//       `worker ${process.pid} on Port ${app.get(
+//         'port'
+//       )} | Environment : ${app.get('env')}`
+//     );
+//   });
+// }
