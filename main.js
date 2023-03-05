@@ -20,7 +20,7 @@ if (cluster.isMaster){
   
   require('./controller/Cache').Get()
 
-  for(let i=0; i<numCpus; i++){ 
+  for(let i=0; i<1; i++){ 
     cluster.fork()
   }
   
